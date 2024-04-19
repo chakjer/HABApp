@@ -1,4 +1,4 @@
-FROM python:3.11 as buildimage
+FROM python:3.11-alpine as buildimage
 
 COPY . /tmp/app_install
 
@@ -7,7 +7,7 @@ RUN set -eux; \
 	cd /tmp/app_install; \
 	pip wheel --wheel-dir=/root/wheels .
 
-FROM python:3.11
+FROM python:3.11-alpine
 
 COPY --from=buildimage /root/wheels /root/wheels
 COPY container/entrypoint.sh /entrypoint.sh
@@ -18,13 +18,12 @@ ENV HABAPP_HOME=/habapp \
 
 RUN set -eux; \
 # Install required dependencies
-	apt-get update; \
-	DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
-		gosu \
+	apk update; \
+	apk add \
+		bash \
+		su-exec \
 		tini; \
-	ln -s -f $(which gosu) /usr/local/bin/gosu; \
-	apt-get clean; \
-	rm -rf /var/lib/apt/lists/*; \
+	ln -s -f $(which su-exec) /usr/local/bin/su-exec; \
 	mkdir -p ${HABAPP_HOME}; \
 	mkdir -p ${HABAPP_HOME}/config; \
 # install HABApp
@@ -32,6 +31,13 @@ RUN set -eux; \
     	--no-index \
     	--find-links=/root/wheels \
 		habapp; \
+# additional modules
+        pip3 install \
+        --find-links=/root/wheels \
+        	influxdb_client \
+		suntime\
+		pytz; \
+
 # prepare entrypoint script
 	chmod +x /entrypoint.sh; \
 # clean up
@@ -41,4 +47,4 @@ WORKDIR ${HABAPP_HOME}
 VOLUME ["${HABAPP_HOME}/config"]
 ENTRYPOINT ["/entrypoint.sh"]
 
-CMD ["gosu", "habapp", "tini", "--", "python", "-m", "HABApp", "--config", "./config"]
+CMD ["su-exec", "habapp", "tini", "--", "python", "-m", "HABApp", "--config", "./config"]

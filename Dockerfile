@@ -34,9 +34,7 @@ RUN set -eux; \
 # additional modules
         pip3 install \
         --find-links=/root/wheels \
-        	influxdb_client \
-		suntime\
-		pytz; \
+        	influxdb_client; \
 
 # prepare entrypoint script
 	chmod +x /entrypoint.sh; \

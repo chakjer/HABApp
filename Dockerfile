@@ -1,4 +1,3 @@
-test
 FROM python:3.11 as buildimage
 
 COPY . /tmp/app_install

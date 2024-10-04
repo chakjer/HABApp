@@ -51,7 +51,7 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: |
-            zaba.debesciak.duckdns.org/repo/habapp-alpine:alpine  # Tag dla gałęzi alpine
+            zaba.debesciak.duckdns.org/repo/habapp-alpine:latest  # Tag dla gałęzi alpine
         if: github.ref == 'refs/heads/alpine' 
 
       - name: Image digest

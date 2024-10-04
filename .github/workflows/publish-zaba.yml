@@ -29,7 +29,7 @@ jobs:
         with:
           username: ${{ secrets.JFROG_USER }}
           password: ${{ secrets.JFROG_API_KEY }}
-          registry: zaba.debesciak.duckdns.org/tri-island
+          registry: zaba.debesciak.duckdns.org/artifactory/repo
 
       - name: Build and push latest
         id: docker_build_latest  
@@ -38,7 +38,7 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: |
-            zaba.debesciak.duckdns.org/tri-island/habapp-alpine:latest
+            zaba.debesciak.duckdns.org/artifactory/repo/habapp-alpine:latest
         if: github.ref == 'refs/heads/alpine'  
 
       - name: Image digest

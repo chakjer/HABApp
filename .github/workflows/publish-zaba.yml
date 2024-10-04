@@ -1,0 +1,58 @@
+name: Publish HABApp distributions to JFrog Artifactory
+on:
+  release:
+    types: [published]
+  push:
+    branches:
+      - alpine  
+
+jobs:
+  buildx:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: alpine 
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: amd64
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          version: latest
+
+      - name: Login to JFrog Artifactory
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.JFROG_USER }}
+          password: ${{ secrets.JFROG_API_KEY }}
+          registry: zaba.debesciak.duckdns.org
+
+      - name: Build and push release
+        id: docker_build_release
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          platforms: linux/amd64
+          tags: |
+            zaba.debesciak.duckdns.org/repo/habapp-alpine:latest
+            zaba.debesciak.duckdns.org/repo/habapp-alpine:${{ github.ref_name }}
+        if: github.event_name == 'release' && github.event.action == 'published' 
+
+      - name: Build and push latest
+        id: docker_build_latest
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          platforms: linux/amd64
+          tags: |
+            zaba.debesciak.duckdns.org/repo/habapp-alpine:alpine  # Tag dla gałęzi alpine
+        if: github.ref == 'refs/heads/alpine' 
+
+      - name: Image digest
+        run: echo ${{ steps.docker_build_release.outputs.digest }}

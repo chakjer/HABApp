@@ -41,6 +41,8 @@ jobs:
           platforms: linux/amd64
           tags: |
             zaba.debesciak.duckdns.org/artifactory/repo/habapp-alpine:latest
+          build-args: |
+            --debug
         if: github.ref == 'refs/heads/alpine'  
 
       - name: Image digest

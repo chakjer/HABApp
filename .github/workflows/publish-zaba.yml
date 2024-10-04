@@ -25,8 +25,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t zaba.debesciak.duckdns.org/artifactory/repo/habapp-alpine:latest .
+          docker build -t zaba.debesciak.duckdns.org/repo/habapp-alpine:latest .
 
       - name: Push Docker image to JFrog
         run: |
-          jfrog rt docker-push zaba.debesciak.duckdns.org/artifactory/repo/habapp-alpine:latest
+          jfrog rt docker-push zaba.debesciak.duckdns.org/repo/habapp-alpine:latest

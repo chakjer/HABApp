@@ -15,7 +15,7 @@ jobs:
 
       - name: Install JFrog CLI
         run: |
-          curl -fL https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/2.70.0/jfrog-cli-linux-amd64/jf > jf
+          curl -fL https://zaba.debesciak.duckdns.org/artifactory/bin/jfrog-cli/v2-jf/2.70.0/jfrog-cli-linux-amd64/jf > jf
           chmod +x jf
           sudo mv jf /usr/local/bin/jf
 

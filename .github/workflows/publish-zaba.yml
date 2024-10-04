@@ -15,13 +15,13 @@ jobs:
 
       - name: Install JFrog CLI
         run: |
-          curl -fL https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/2.70.0/jfrog-cli-linux-amd64/jf > jfrog
-          chmod +x jfrog
-          sudo mv jfrog /usr/local/bin/jfrog
+          curl -fL https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/2.70.0/jfrog-cli-linux-amd64/jf > jf
+          chmod +x jf
+          sudo mv jf /usr/local/bin/jf
 
       - name: Configure JFrog CLI
         run: |
-          jfrog rt config --url=https://zaba.debesciak.duckdns.org/artifactory --user=${{ secrets.JFROG_USER }} --password=${{ secrets.JFROG_API_KEY }}
+          jf config add zaba --url=https://zaba.debesciak.duckdns.org --user=${{ secrets.JFROG_USER }} --password=${{ secrets.JFROG_API_KEY }}
 
       - name: Build Docker image
         run: |
@@ -29,4 +29,4 @@ jobs:
 
       - name: Push Docker image to JFrog
         run: |
-          jfrog rt docker-push zaba.debesciak.duckdns.org/repo/habapp-alpine:latest
+          jf docker push zaba.debesciak.duckdns.org/repo/habapp-alpine:latest

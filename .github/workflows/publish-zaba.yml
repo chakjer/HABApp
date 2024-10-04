@@ -29,7 +29,7 @@ jobs:
         with:
           username: ${{ secrets.JFROG_USER }}
           password: ${{ secrets.JFROG_API_KEY }}
-          registry: zaba.debesciak.duckdns.org/artifactory/repo
+          registry: zaba.debesciak.duckdns.org
           ecr: false
           logout: true
 
@@ -40,7 +40,7 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: |
-            zaba.debesciak.duckdns.org/artifactory/repo/habapp-alpine:latest
+            repo/habapp-alpine:latest
           build-args: |
             --debug
         if: github.ref == 'refs/heads/alpine'  

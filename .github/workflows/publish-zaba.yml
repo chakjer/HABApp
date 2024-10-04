@@ -30,6 +30,8 @@ jobs:
           username: ${{ secrets.JFROG_USER }}
           password: ${{ secrets.JFROG_API_KEY }}
           registry: zaba.debesciak.duckdns.org/artifactory/repo
+          ecr: false
+          logout: true
 
       - name: Build and push latest
         id: docker_build_latest  

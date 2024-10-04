@@ -1,24 +1,32 @@
+from __future__ import annotations
+
 import logging
-from typing import Dict, Set, Tuple, TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from immutables import Map
 
 import HABApp
-
 from HABApp.core.internals import uses_item_registry
 from HABApp.core.logger import log_warning
-from HABApp.openhab.definitions.things import THING_STATUS_DEFAULT, THING_STATUS_DETAIL_DEFAULT, ThingStatusEnum, \
-    ThingStatusDetailEnum
+from HABApp.openhab.definitions.things import (
+    THING_STATUS_DEFAULT,
+    THING_STATUS_DETAIL_DEFAULT,
+    ThingStatusDetailEnum,
+    ThingStatusEnum,
+)
+
 
 if TYPE_CHECKING:
-    import HABApp.openhab.definitions.rest
+    from HABApp.openhab.definitions.rest import ThingResp
+    from HABApp.openhab.events import ThingAddedEvent
+    from HABApp.openhab.items import OpenhabItem
 
 log = logging.getLogger('HABApp.openhab.items')
 
 Items = uses_item_registry()
 
 
-def add_to_registry(item: 'HABApp.openhab.items.OpenhabItem', set_value=False):
+def add_to_registry(item: OpenhabItem, set_value=False):
     name = item.name
     for grp in item.groups:
         MEMBERS.setdefault(grp, set()).add(name)
@@ -66,17 +74,17 @@ def remove_from_registry(name: str):
     return None
 
 
-MEMBERS: Dict[str, Set[str]] = {}
+MEMBERS: dict[str, set[str]] = {}
 
 
 def fresh_item_sync():
     MEMBERS.clear()
 
 
-def get_members(group_name: str) -> Tuple['HABApp.openhab.items.OpenhabItem', ...]:
+def get_members(group_name: str) -> tuple[OpenhabItem, ...]:
     ret = []
     for name in MEMBERS.get(group_name, []):
-        item = Items.get_item(name)  # type: HABApp.openhab.items.OpenhabItem
+        item = Items.get_item(name)  # type: OpenhabItem
         ret.append(item)
     return tuple(sorted(ret, key=lambda x: x.name))
 
@@ -84,21 +92,28 @@ def get_members(group_name: str) -> Tuple['HABApp.openhab.items.OpenhabItem', ..
 # ----------------------------------------------------------------------------------------------------------------------
 # Thing handling
 # ----------------------------------------------------------------------------------------------------------------------
-def add_thing_to_registry(data: Union['HABApp.openhab.definitions.rest.ThingResp',
-                                      'HABApp.openhab.events.thing_events.ThingAddedEvent']):
+
+def get_thing_status_from_resp(
+        obj: ThingResp | None) -> tuple[ThingStatusEnum, ThingStatusDetailEnum, str]:
+    if obj is None:
+        return THING_STATUS_DEFAULT, THING_STATUS_DETAIL_DEFAULT, ''
+    return (
+        obj.status.status,
+        obj.status.detail,
+        obj.status.description if obj.status.description is not None else ''
+    )
+
+
+def add_thing_to_registry(data: ThingResp | ThingAddedEvent):
 
     if isinstance(data, HABApp.openhab.events.thing_events.ThingAddedEvent):
         name = data.name
-        status: ThingStatusEnum = THING_STATUS_DEFAULT
-        status_detail: ThingStatusDetailEnum = THING_STATUS_DETAIL_DEFAULT
-        status_description: str = ''
+        status, status_detail, status_description = get_thing_status_from_resp(None)
     elif isinstance(data, HABApp.openhab.definitions.rest.ThingResp):
         name = data.uid
-        status = data.status.status
-        status_detail = data.status.detail
-        status_description = data.status.description if data.status.description else ''
+        status, status_detail, status_description = get_thing_status_from_resp(data)
     else:
-        raise ValueError()
+        raise TypeError()
 
     if Items.item_exists(name):
         existing = Items.get_item(name)

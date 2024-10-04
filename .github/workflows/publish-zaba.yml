@@ -40,7 +40,7 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: |
-            repo/habapp-alpine:latest
+            zaba.debesciak.duckdns.org/repo/habapp-alpine:latest
           build-args: |
             --debug
         if: github.ref == 'refs/heads/alpine'  

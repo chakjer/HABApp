@@ -24,16 +24,12 @@ jobs:
         with:
           version: latest
 
-      - name: Debug secrets
-        run: |
-          echo "JFROG_USER: ${{ secrets.JFROG_USER }}"
-          
       - name: Login to JFrog Artifactory
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.JFROG_USER }}
           password: ${{ secrets.JFROG_API_KEY }}
-          registry: zaba.debesciak.duckdns.org
+          registry: zaba.debesciak.duckdns.org/repo
 
       - name: Build and push latest
         id: docker_build_latest  

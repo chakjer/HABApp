@@ -30,3 +30,4 @@ jobs:
       - name: Push Docker image to JFrog
         run: |
           jf docker push zaba.debesciak.duckdns.org/repo/habapp-alpine:latest
+

@@ -32,3 +32,4 @@ jobs:
           jf docker push zaba.debesciak.duckdns.org/repo/habapp-alpine:latest
 
         
+        

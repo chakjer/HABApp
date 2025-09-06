@@ -127,6 +127,41 @@ MyOpenhabRule()
 ```
 
 # Changelog
+
+#### 25.07.0 (2025-07-28)
+- Support for OpenHAB 5.0
+- Updated dependencies
+
+#### 25.06.2 (2025-06-13)
+- Updated dependencies
+
+#### 25.06.1 (2025-06-04)
+- Fixed introduced file load issue
+
+#### 25.06.0 (2025-06-04)
+- Fixed JobInThePast issue
+- Fixed restriction for certain image types
+- Fixed issue when there is an error during rule load
+
+#### 25.05.0 (2025-05-06)
+- Fixed scientific handling of floats
+- Fixed InstantView
+- Updated dependencies
+
+#### 25.04.0 (2025-04-28)
+- Updated thread pool and asyncio handling
+- Dropped support for OpenHAB 3
+- Number item has a dimension property which is set if it's a UoM item
+- Added QuantityInt and QuantityFloat which is normal int/float but carries the unit in `.unit`
+- Added Point datatype for dealing with coordinates
+- Added StringList
+- Use websockets for openHAB connection
+- Sending events and commands to openHAB is stricter and will raise an error if the value will not be accepted
+- Removed ComplexEventValue
+- Added RingCounter, RingCounterTracker and ExpiringCache to utils
+- `on_rule_loaded` and `on_rule_unloaded` can be both sync and async
+- Changed license to EUPL
+
 #### 24.11.1 (2024-11-25)
 Fixed an issue with the logging Queue
 
